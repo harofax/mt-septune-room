@@ -1,0 +1,26 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#pragma kernel CSInit
+
+Texture2D<float4> InputTexture;
+
+RWStructuredBuffer<int> ResultBuffer;
+// 8 8 1
+[numthreads(64,1,1)]
+void CSInit (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+
+    ResultBuffer[id.x] = 0.0;
+}
+
+[numthreads(8,8,1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    uint4 col = InputTexture[id.xy];
+
+    if(col.r > 0.4)
+    {
+        InterlockedAdd(ResultBuffer[0], 1);
+    }
+}
